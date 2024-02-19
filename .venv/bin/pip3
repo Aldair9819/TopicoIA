@@ -1,4 +1,4 @@
-#!/home/waldosir/Documents/2doCodigo/TopicoIA/.venv/bin/python3
+#!/home/waldosir/Documents/2doCodigo/TopicoIA/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -58,4 +58,39 @@ tip.view(sim=tipping)
 plt.savefig("quality_membership.png")
 plt.savefig("service_membership.png")
 
-time.sleep(10)
+#Python 3.8.18
+import time
+import numpy as np
+import skfuzzy as fuzz
+from skfuzzy import control as ctrl
+import matplotlib.pyplot as plt
+
+# ... (tu código actual)
+
+# Show the membership functions
+quality.view()
+service.view()
+tip.view()
+rule1.view()
+tipping_ctrl.view()
+
+# Display the figures
+plt.show()
+
+# Note: if you like passing many inputs all at once, use .inputs(dict_of_data)
+tipping.input['quality'] = 7
+tipping.input['service'] = 5
+
+# Crunch the numbers
+tipping.compute()
+print(tipping.output['tip'])
+service.view(sim=tipping)
+quality.view(sim=tipping)
+tip.view(sim=tipping)
+
+# Save the membership function figures
+plt.savefig("quality_membership.png")
+plt.savefig("service_membership.png")
+
+# Show the final figures
+plt.show()
