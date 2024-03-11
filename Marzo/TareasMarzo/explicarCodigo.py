@@ -7,6 +7,7 @@ import base64
 from PIL import Image
 from io import BytesIO
 import numpy as np
+import pandas as pd
 
 def imprimirCara(imagen):
     pil_image = Image.fromarray(imagen)
@@ -52,6 +53,7 @@ def info_foto(ruta, imagen):
     return [imagen, caracteristicas,cara, folder_name]
 
 def sacar_datos_imagen(carpeta_raiz):
+    matriz_principal = []
     # Recorrer todas las carpetas, subcarpetas y archivos de la carpeta raíz
     for carpeta_actual, subcarpetas, archivos in os.walk(carpeta_raiz):
         # Recorrer todos los archivos de la carpeta actual
@@ -65,11 +67,14 @@ def sacar_datos_imagen(carpeta_raiz):
                     print(f"Imagen: {archivo} - Directorio: {folder_name}")
                     dato = info_foto(ruta_completa, archivo)
                     if dato != None:
-                        procesoCapturaDato(dato)
+                        matriz_principal.append(dato)
+                        #procesoCapturaDato(dato)
+
             except (IOError, OSError):
                 # Ignorar archivos que no son imágenes
                 pass
     print("Terminado")
+    return matriz_principal
 
 def checandoUnaFoto():
     print("Hola")
@@ -100,6 +105,10 @@ def procesoCapturaDato(matriz):
 
 print("Inicio")
 ruta_de_tu_carpeta = 'Marzo\BD\corpus_images'
-sacar_datos_imagen(ruta_de_tu_carpeta)
+#matriz = sacar_datos_imagen(ruta_de_tu_carpeta)
+matrizPrueba = checandoUnaFoto()
+print(matrizPrueba)
+df = pd.DataFrame(matrizPrueba)
+print("Final")
 
 
