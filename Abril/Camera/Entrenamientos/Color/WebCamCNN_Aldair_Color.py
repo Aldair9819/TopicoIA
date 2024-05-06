@@ -4,35 +4,27 @@ import numpy as np
 import face_recognition
 from tensorflow.keras.models import load_model
 from PIL import Image
-import tensorflow as tf
-
-#tf.config.set_visible_devices([], 'GPU')
 
 # Cargar modelo mediante tensorflow, en h5
-modelo_emociones = load_model("/home/waldos/Documents/2doCodigo/TopicoIA/Abril/Camera/modelo_cnn_gray.h5")
+modelo_emociones = load_model("/home/waldos/Documents/2doCodigo/TopicoIA/Abril/Camera/Entrenamientos/Color/modelo_cnn_color.h5")
 
 #Las etiquetas del modelo, dado que está en y_oneHot
 labels = ['bored', 'engaged', 'excited', 'focused', 'interested', 'relaxed']
-
-def transformacionDato(frame):
-    print(frame.shape)
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 #Funcion que detecta y predice las emociones
 def detectar_y_predecir_emociones(frame, modelo):
     # Convertir el frame a escala de grises
     #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     try:
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
         # Detectar los rostros en la imagen
-        puntosX_YRostro = face_recognition.face_locations(gray)
+        puntosX_YRostro = face_recognition.face_locations(frame)
         
         #Recorta la cara
         puntos_ubicacion_cara = puntosX_YRostro[0]
         arriba, derecha, abajo, izquierda = puntos_ubicacion_cara
         
-        cara_recortada = gray[arriba:abajo, izquierda:derecha]
+        cara_recortada = frame[arriba:abajo, izquierda:derecha]
         
         
         cara_numpy = np.array(cara_recortada)
@@ -40,11 +32,11 @@ def detectar_y_predecir_emociones(frame, modelo):
         cv2.imshow('Cara', cara_redimensionada)
         
         # Normalizar el frame
-        normalized_frame = cara_redimensionada.astype('float32') / 255.0
+        normalized_frame = np.array(cara_redimensionada.astype('float32') / 255.0)
 
         # Agregar una dimensión adicional para la compatibilidad con la red neuronal
         normalized_frame = np.expand_dims(normalized_frame, axis=0)
-
+        print(normalized_frame.shape)
 
         #cara_normalizada = cara_redimensionada / 255.0
         cara_predicion = modelo.predict(normalized_frame)
@@ -58,7 +50,7 @@ def detectar_y_predecir_emociones(frame, modelo):
         if str(e) == 'list index out of range':
             pass
         else:
-            print()
+            print(e)
 
 
 # Iniciar la captura de video desde la cámara web
