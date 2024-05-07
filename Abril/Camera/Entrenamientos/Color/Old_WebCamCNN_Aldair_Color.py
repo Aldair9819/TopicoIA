@@ -11,64 +11,32 @@ modelo_emociones = load_model("/home/waldos/Documents/2doCodigo/TopicoIA/Abril/C
 #Las etiquetas del modelo, dado que está en y_oneHot
 labels = ['bored', 'engaged', 'excited', 'focused', 'interested', 'relaxed']
 
-
-def convertir_caracteristicas_lista_a_numpy(caractetisticas_faciales_lista):
-    """
-    Toma los diccionarios almacenados en la columna Hitos faciales y elimina las keys,
-    dejando solo las coordenadas de donde se encuentran los puntos faciales.
-    """
-    caracteristicas_array = []
-    for caracteristicas in caractetisticas_faciales_lista:
-        puntos_referencia = []
-        for rasgo_facial in caracteristicas.keys():
-            puntos_referencia.extend(caracteristicas[rasgo_facial])
-        caracteristicas_array.append(puntos_referencia)
-    return np.array(caracteristicas_array)
-
-
-
-def extract_face_from_image(frame_cara):
-    imagen = frame_cara
-    directorio = {'Caracteristicas': []}
-    # Cambiar el tamaño de la imagen
-    imagen_redimensionada = cv2.resize(imagen, (150, 150))
-    
-    # Obtener los landmarks faciales
-    caracteristicas_faciales_lista = face_recognition.face_landmarks(imagen_redimensionada)
-
-    caracteristicas_faciales_numpy = convertir_caracteristicas_lista_a_numpy(caracteristicas_faciales_lista)
-
-    puntosX_YRostro = face_recognition.face_locations(frame)
-        
-    #Recorta la cara
-    puntos_ubicacion_cara = puntosX_YRostro[0]
-    arriba, derecha, abajo, izquierda = puntos_ubicacion_cara
-
-    return imagen_redimensionada,caracteristicas_faciales_numpy, arriba, derecha, abajo, izquierda 
-
-        
-def impresionCara(frame, arriba, derecha, abajo, izquierda):
-    cara_recortada = frame[arriba:abajo, izquierda:derecha]    
-    cara_numpy = np.array(cara_recortada)
-    cara_redimensionada = np.array(Image.fromarray(cara_numpy).resize((150,150)))
-    cv2.imshow('Cara', cara_redimensionada)      
-
 #Funcion que detecta y predice las emociones
 def detectar_y_predecir_emociones(frame, modelo):
     # Convertir el frame a escala de grises
     #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     try:
-        imagen,extraccion_caracteristicas, arriba, derecha, abajo, izquierda = extract_face_from_image(frame)
         
-        impresionCara(frame, arriba, derecha, abajo, izquierda)
         # Detectar los rostros en la imagen
-
+        puntosX_YRostro = face_recognition.face_locations(frame)
+        
+        #Recorta la cara
+        puntos_ubicacion_cara = puntosX_YRostro[0]
+        arriba, derecha, abajo, izquierda = puntos_ubicacion_cara
+        
+        cara_recortada = frame[arriba:abajo, izquierda:derecha]
+        
+        
+        cara_numpy = np.array(cara_recortada)
+        cara_redimensionada = np.array(Image.fromarray(cara_numpy).resize((150,150)))
+        cv2.imshow('Cara', cara_redimensionada)
+        
         # Normalizar el frame
-        normalized_frame = np.array(imagen.astype('float32') / 255.0)
+        normalized_frame = np.array(cara_redimensionada.astype('float32') / 255.0)
 
         # Agregar una dimensión adicional para la compatibilidad con la red neuronal
         normalized_frame = np.expand_dims(normalized_frame, axis=0)
-        print(imagen.shape)
+        print(normalized_frame.shape)
 
         #cara_normalizada = cara_redimensionada / 255.0
         cara_predicion = modelo.predict(normalized_frame)
