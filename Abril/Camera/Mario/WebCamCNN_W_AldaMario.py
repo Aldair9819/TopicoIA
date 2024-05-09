@@ -4,13 +4,19 @@ import numpy as np
 import face_recognition
 from tensorflow.keras.models import load_model
 from PIL import Image
+import tensorflow as tf
+
+#tf.config.set_visible_devices([], 'GPU')
 
 # Cargar modelo mediante tensorflow, en h5
-modelo_emociones = load_model("/home/waldos/Documents/2doCodigo/TopicoIA/Abril/Camera/Entrenamientos/Gray/modelo_cnn_gray_v2.h5")
+modelo_emociones = load_model("/home/waldos/Documents/2doCodigo/TopicoIA/Abril/Camera/Mario/modeloCNN3.h5")
 
 #Las etiquetas del modelo, dado que está en y_oneHot
-#labels = ['bored', 'engaged', 'excited', 'focused', 'interested', 'relaxed']
-labels = ['excited' 'engaged' 'bored']
+labels = ['bored', 'engaged', 'excited', 'focused', 'interested', 'relaxed']
+
+def transformacionDato(frame):
+    print(frame.shape)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 #Funcion que detecta y predice las emociones
 def detectar_y_predecir_emociones(frame, modelo):
@@ -18,6 +24,7 @@ def detectar_y_predecir_emociones(frame, modelo):
     #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     try:
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        
         # Detectar los rostros en la imagen
         puntosX_YRostro = face_recognition.face_locations(gray)
         
@@ -33,16 +40,16 @@ def detectar_y_predecir_emociones(frame, modelo):
         cv2.imshow('Cara', cara_redimensionada)
         
         # Normalizar el frame
-        normalized_frame = np.array(cara_redimensionada.astype('float32') / 255.0)
+        normalized_frame = cara_redimensionada.astype('float32') / 255.0
 
         # Agregar una dimensión adicional para la compatibilidad con la red neuronal
         normalized_frame = np.expand_dims(normalized_frame, axis=0)
+
 
         #cara_normalizada = cara_redimensionada / 255.0
         cara_predicion = modelo.predict(normalized_frame)
         idx_etiqueta = np.argmax(cara_predicion)
         etiqueta = labels[idx_etiqueta]
-        print(etiqueta)
         cv2.putText(frame, etiqueta, (izquierda, arriba - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
         cv2.rectangle(frame, (izquierda, arriba), (derecha, abajo), (0, 255, 0), 2)
 
@@ -51,7 +58,7 @@ def detectar_y_predecir_emociones(frame, modelo):
         if str(e) == 'list index out of range':
             pass
         else:
-            print(e)
+            print()
 
 
 # Iniciar la captura de video desde la cámara web

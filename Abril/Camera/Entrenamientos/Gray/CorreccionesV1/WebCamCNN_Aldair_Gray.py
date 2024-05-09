@@ -6,11 +6,11 @@ from tensorflow.keras.models import load_model
 from PIL import Image
 
 # Cargar modelo mediante tensorflow, en h5
-modelo_emociones = load_model("/home/waldos/Documents/2doCodigo/TopicoIA/Abril/Camera/Entrenamientos/Gray/modelo_cnn_gray_v2.h5")
+modelo_emociones = load_model("/home/waldos/Documents/2doCodigo/TopicoIA/Abril/Camera/Entrenamientos/Gray/CorreccionesV1/modelo_cnn_gray_v1.h5")
 
 #Las etiquetas del modelo, dado que está en y_oneHot
 #labels = ['bored', 'engaged', 'excited', 'focused', 'interested', 'relaxed']
-labels = ['excited' 'engaged' 'bored']
+labels = ['excited','engaged','bored']
 
 #Funcion que detecta y predice las emociones
 def detectar_y_predecir_emociones(frame, modelo):
@@ -41,6 +41,7 @@ def detectar_y_predecir_emociones(frame, modelo):
         #cara_normalizada = cara_redimensionada / 255.0
         cara_predicion = modelo.predict(normalized_frame)
         idx_etiqueta = np.argmax(cara_predicion)
+
         etiqueta = labels[idx_etiqueta]
         print(etiqueta)
         cv2.putText(frame, etiqueta, (izquierda, arriba - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
