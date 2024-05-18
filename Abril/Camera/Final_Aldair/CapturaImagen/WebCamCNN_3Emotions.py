@@ -1,5 +1,3 @@
-#Listo. No hay nada que revisar
-
 #Liberias para usar cv2, numpy y tensorflow para cargar modelo
 import cv2
 import numpy as np
@@ -8,69 +6,45 @@ from tensorflow.keras.models import load_model
 from PIL import Image
 
 # Cargar modelo mediante tensorflow, en h5
-modelo1 = 'modelo_mlp_Estratificado.h5' #SI PASA
-modelo2 = 'modelo_mlp_NoEstratificado.h5' #SI PASA
+modelo1 = 'modelo_cnn_gray_Estratificado.h5' #Jala, batalla engaged
+modelo2 = 'modelo_cnn_gray_NoEstratificado.h5'
 modelo_emociones = load_model('/home/waldos/Documents/2doCodigo/TopicoIA/Abril/Camera/Final_Aldair/Emotions_3/'+modelo1)
 
-#Las etiquetas del modelo, dado que está en y_oneHot
 #labels = ['bored', 'engaged', 'excited' ,'focused', 'interested', 'relaxed']
 labels = ['bored', 'engaged' ,'excited']
-
-
-
-
-
-def extract_face_from_image(frame_cara):
-    # Cambiar el tamaño de la imagen
-    #gray = cv2.cvtColor(frame_cara, cv2.COLOR_RGB2GRAY)
-    
-    # Obtener los landmarks faciales
-    caracteristicas_faciales_lista = face_recognition.face_landmarks(frame_cara)[0]
-    
-    landmarks = []
-    for facial_feature in caracteristicas_faciales_lista.keys():
-        landmarks.extend(caracteristicas_faciales_lista[facial_feature])
-    
-    caracteristicas_faciales_numpy = np.array(landmarks)
-
-    puntosX_YRostro = face_recognition.face_locations(frame_cara)
-        
-    #Recorta la cara
-    puntos_ubicacion_cara = puntosX_YRostro[0]
-    arriba, derecha, abajo, izquierda = puntos_ubicacion_cara
-
-    return caracteristicas_faciales_numpy, arriba, derecha, abajo, izquierda 
-
-        
-def impresionCara(frame_carita, arriba, derecha, abajo, izquierda):
-    cara_recortada = frame_carita[arriba:abajo, izquierda:derecha]    
-    cara_numpy = np.array(cara_recortada)
-
-    cara_redimensionada = np.array(Image.fromarray(cara_numpy).resize((150,150)))
-    cv2.imshow('Cara', cara_redimensionada)      
 
 #Funcion que detecta y predice las emociones
 def detectar_y_predecir_emociones(frame, modelo):
     # Convertir el frame a escala de grises
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     try:
-        extraccion_caracteristicas, arriba, derecha, abajo, izquierda = extract_face_from_image(gray)
-        
-        #impresionCara(gray, arriba, derecha, abajo, izquierda)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         # Detectar los rostros en la imagen
-
-        # Normalizar el frame
-        normalized_frame = extraccion_caracteristicas
+        puntosX_YRostro = face_recognition.face_locations(gray)
         
+        #Recorta la cara
+        puntos_ubicacion_cara = puntosX_YRostro[0]
+        arriba, derecha, abajo, izquierda = puntos_ubicacion_cara
+        
+        cara_recortada = gray[arriba:abajo, izquierda:derecha]
+        
+        
+        cara_numpy = np.array(cara_recortada)
+        cara_redimensionada = np.array(Image.fromarray(cara_numpy).resize((150,150)))
+        cv2.imshow('Cara', cara_redimensionada)
+        
+        # Normalizar el frame
+        normalized_frame = np.array(cara_redimensionada.astype('float32') / 255.0)
+
         # Agregar una dimensión adicional para la compatibilidad con la red neuronal
         normalized_frame = np.expand_dims(normalized_frame, axis=0)
 
         #cara_normalizada = cara_redimensionada / 255.0
         cara_predicion = modelo.predict(normalized_frame)
+        print(cara_predicion)
         idx_etiqueta = np.argmax(cara_predicion)
         etiqueta = labels[idx_etiqueta]
         print(etiqueta)
-        print(idx_etiqueta)
         cv2.putText(frame, etiqueta, (izquierda, arriba - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
         cv2.rectangle(frame, (izquierda, arriba), (derecha, abajo), (0, 255, 0), 2)
 

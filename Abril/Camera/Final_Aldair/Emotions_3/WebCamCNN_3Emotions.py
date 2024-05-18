@@ -6,9 +6,9 @@ from tensorflow.keras.models import load_model
 from PIL import Image
 
 # Cargar modelo mediante tensorflow, en h5
-modelo1 = 'modelo_cnn_gray_Estratificado.h5' #Funciona
-modelo2 = 'modelo_cnn_gray_NoEstratificado.h5'#Funciona
-modelo_emociones = load_model('/home/waldos/Documents/2doCodigo/TopicoIA/Abril/Camera/Final_Aldair/Emotions_3/'+modelo2)
+modelo1 = 'modelo_cnn_gray_Estratificado.h5' #Jala, batalla engaged
+modelo2 = 'modelo_cnn_gray_NoEstratificado.h5'
+modelo_emociones = load_model('/home/waldos/Documents/2doCodigo/TopicoIA/Abril/Camera/Final_Aldair/Emotions_3/modelo_cnn_gray_3_Estratificado.h5')
 
 #labels = ['bored', 'engaged', 'excited' ,'focused', 'interested', 'relaxed']
 labels = ['bored', 'engaged' ,'excited']

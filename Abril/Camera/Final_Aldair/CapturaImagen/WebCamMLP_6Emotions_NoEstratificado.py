@@ -1,5 +1,4 @@
-#Listo. No hay nada que revisar
-
+#---Todo bien---#
 #Liberias para usar cv2, numpy y tensorflow para cargar modelo
 import cv2
 import numpy as np
@@ -8,13 +7,11 @@ from tensorflow.keras.models import load_model
 from PIL import Image
 
 # Cargar modelo mediante tensorflow, en h5
-modelo1 = 'modelo_mlp_Estratificado.h5' #SI PASA
-modelo2 = 'modelo_mlp_NoEstratificado.h5' #SI PASA
-modelo_emociones = load_model('/home/waldos/Documents/2doCodigo/TopicoIA/Abril/Camera/Final_Aldair/Emotions_3/'+modelo1)
+modelo_emociones = load_model('modelo_mlp_6_NoEstratificado.h5')
 
 #Las etiquetas del modelo, dado que está en y_oneHot
-#labels = ['bored', 'engaged', 'excited' ,'focused', 'interested', 'relaxed']
-labels = ['bored', 'engaged' ,'excited']
+labels = ['bored', 'engaged', 'excited' ,'focused', 'interested', 'relaxed']
+#labels = ['bored', 'engaged' ,'excited']
 
 
 

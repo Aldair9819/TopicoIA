@@ -6,15 +6,9 @@ from tensorflow.keras.models import load_model
 from PIL import Image
 
 # Cargar modelo mediante tensorflow, en h5
-modelo1 = 'modelo_cnn_gray_Estratificado.h5' #Jala
-modelo2 = 'modelo_cnn_gray_NoEstratificado.h5' #Jala
-modelo3 = 'Newmodelo_cnn_gray_Estratificado.h5' 
-modelo_emociones = load_model('/home/waldos/Documents/2doCodigo/TopicoIA/Abril/Camera/Final_Aldair/Emotions_6/'+modelo2)
-#RElax, excited, focus
-#Las etiquetas del modelo, dado que está en y_oneHot
-#labels = ['focused', 'relaxed', 'excited', 'engaged', 'interested', 'bored']
-labels = ['bored', 'engaged', 'excited' ,'focused', 'interested', 'relaxed']
-#labels = ['excited','engaged' ,'bored']
+modelo_emociones = load_model('modelo_cnn_gray_3_Estratificado.h5')
+
+labels = ['bored', 'engaged' ,'excited']
 
 #Funcion que detecta y predice las emociones
 def detectar_y_predecir_emociones(frame, modelo):
