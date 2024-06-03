@@ -6,7 +6,7 @@ from tensorflow.keras.models import load_model
 from PIL import Image
 
 # Cargar modelo mediante tensorflow, en h5
-modelo_emociones = load_model('modelo_cnn_EstratificadoV2.h5')
+modelo_emociones = load_model('modelo_cnn_EstratificadoVF1.h5')
 
 #Las etiquetas del modelo, dado que está en y_oneHot
 labels = ['angry', 'disgust', 'fear', 'happy', 'neutral', 'sad', 'surprise']
